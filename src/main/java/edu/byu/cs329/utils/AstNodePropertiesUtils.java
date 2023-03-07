@@ -2,9 +2,11 @@ package edu.byu.cs329.utils;
 
 import java.util.List;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
@@ -64,6 +66,21 @@ public class AstNodePropertiesUtils {
     return getName(declaration.fragments());
   }
 
+
+  public static String getName(ExpressionStatement expressionStatement) {
+    Expression expression = expressionStatement.getExpression();
+    if (expression instanceof Assignment) {
+      Assignment assignment = (Assignment) expression;
+      Expression leftHandSide = assignment.getLeftHandSide();
+      if (leftHandSide instanceof SimpleName) {
+        SimpleName simpleName = (SimpleName) leftHandSide;
+        return simpleName.getIdentifier();
+      }
+    }
+    return null;
+  }
+
+
   /**
    * Get the string identifier from the SimpleName.
    * 
@@ -102,16 +119,17 @@ public class AstNodePropertiesUtils {
     return declaration.getName();   
   }
 
-  /**
-   * Get the SimpleName from the first VariableDeclaration in a VariableDeclarationStatement.
-   *
-   * @param declarationStatement VariableDeclarationStatement to get the SimpleName from
-   * @return SimpleName of a VariableDeclaration
-   */
-  public static String getSimpleName(ExpressionStatement expressionStatement) {
+  public static SimpleName getSimpleName(ExpressionStatement expressionStatement) {
     Expression expression = expressionStatement.getExpression();
-    return simpleName.getIdentifier();
-
+    if (expression instanceof Assignment) {
+      Assignment assignment = (Assignment) expression;
+      Expression leftHandSide = assignment.getLeftHandSide();
+      if (leftHandSide instanceof SimpleName) {
+        SimpleName simpleName = (SimpleName) leftHandSide;
+        return simpleName;
+      }
+    }
+    return null;
   }
   
   private static VariableDeclaration getFragment(List<?> fragments) {
