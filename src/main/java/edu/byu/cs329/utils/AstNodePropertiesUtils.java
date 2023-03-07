@@ -101,6 +101,18 @@ public class AstNodePropertiesUtils {
     VariableDeclaration declaration = getFragment(declarationStatement.fragments());
     return declaration.getName();   
   }
+
+  /**
+   * Get the SimpleName from the first VariableDeclaration in a VariableDeclarationStatement.
+   *
+   * @param declarationStatement VariableDeclarationStatement to get the SimpleName from
+   * @return SimpleName of a VariableDeclaration
+   */
+  public static String getSimpleName(ExpressionStatement expressionStatement) {
+    Expression expression = expressionStatement.getExpression();
+    return simpleName.getIdentifier();
+
+  }
   
   private static VariableDeclaration getFragment(List<?> fragments) {
     if (fragments.size() > 1) {
